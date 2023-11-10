@@ -3,6 +3,7 @@
 ## Local Run(on SQLLITE3)
 <pre>
   <code>
+    python manage.py migrate
     python manage.py runserver 
   </code>
 </pre> 
