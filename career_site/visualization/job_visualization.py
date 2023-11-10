@@ -91,7 +91,7 @@ def job_tech_graph(job_data): # job serializer
     # 3. Graph node, edge 지정
     Bipart = nx.Graph()
 
-    position = ['시스템/네트워크', '서버/백엔드', '프론트엔드', '머신러닝']
+    # position = ['시스템/네트워크', '서버/백엔드', '프론트엔드', '머신러닝'] # for testing
     Bipart.add_nodes_from(position, bipartite=0) # 그룹 1: position
     Bipart.add_nodes_from(tech_stack, bipartite=1) # 그룹 2: tech_stack
 
