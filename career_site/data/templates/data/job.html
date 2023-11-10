@@ -43,6 +43,7 @@
         $(document).ready(function() {
             $('#job-search-form').on('submit', function(e) {
                 e.preventDefault();
+                $('#job-search-form').nextAll('img').remove();
                 $.ajax({
                     url: $(this).attr('action'),
                     type: $(this).attr('method'),
@@ -51,12 +52,17 @@
                         $.ajax({
                             url: 'create_img',  <!-- 시각화 함수를 처리하는 URL -->
                             type: 'POST',
-                            data: data,
+                            data: JSON.stringify(data),
+                            contentType: 'application/json',
                             success: function(img_data) {
+                                var now = new Date().getTime();
                                 <!-- 서버로부터 받아온 이미지 URL로 img 태그 생성 -->
-                                var img = '<img src="' + img_data.image_url + '">';
+                                var img1 = '<img src="' + img_data.job_freq_hist + '?v=' + now + '" style="width:70%;">';
+                                {#var img2 = '<img src="' + img_data.job_tech_graph + '?v=' + now + '" style="width:50%;">';#}
+                                var img3 = '<img src="' + img_data.wage_pos_hist + '?v=' + now + '" style="width:80%;">';
+
                                 <!-- 생성한 img 태그를 HTML 문서에 추가 -->
-                                $('#result').html(img);
+                                $('#job-search-form').after(img1, img3);
                                 <!-- form 초기화 -->
                                 $('#job-search-form')[0].reset();
                             }
