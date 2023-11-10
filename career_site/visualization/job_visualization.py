@@ -93,12 +93,10 @@ def job_tech_graph(job_data):  # job serializer
             position.add(pos)
         for tech in job.get('tech_stack', []):
             tech_stack.add(tech)
-    # print('---------position----------', position)
-    # print('---------tech_stack----------', tech_stack)
 
     # 예외처리
-    if not position or not tech_stack:
-        return None
+    # if not position or not tech_stack:
+    #     return None
     
     # 3. Graph node, edge 지정
     Bipart = nx.Graph()
@@ -111,7 +109,6 @@ def job_tech_graph(job_data):  # job serializer
         for pos in job.get('position', []):
             for tech in job.get('tech_stack', []):
                     edges.append((pos, tech))
-
     Bipart.add_edges_from(edges)
 
     # 4. tech_stack projection
@@ -120,12 +117,10 @@ def job_tech_graph(job_data):  # job serializer
 
     # 5. 차수 thresh 설정, thresh 이하의 노드는 표시 x
     degree = []
-    print('--------nx.degree(proj)--------', degree)
     for node, deg in nx.degree(proj):
         degree.append(deg)
 
     degree = sorted(list(set(degree)))
-    print('--------degree--------', degree)
     degree_thresh = degree[0]  # 차수 0인 노드는 제외 (최종 결과물_position 1개만 선택)
     max_degree = degree[-1]
     min_degree = degree[0]
@@ -133,11 +128,11 @@ def job_tech_graph(job_data):  # job serializer
     high_degree_node = []
     for node, deg in nx.degree(proj):
         degree.append(deg)
-        if deg > degree_thresh:
+        print('deg', deg, 'degree_thresh', degree_thresh)
+        if deg >= degree_thresh:
             high_degree_node.append(node)
 
     proj_subnet = proj.subgraph(high_degree_node)
-
     # 6. 노드:차수 dict
     node_degrees = dict(proj_subnet.degree())
     node_sizes = {node: degree * 20 for node, degree in node_degrees.items()}  # 차수에 비례하는 크기 가짐
