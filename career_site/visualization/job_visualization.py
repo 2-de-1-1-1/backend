@@ -123,14 +123,14 @@ def job_tech_graph(job_data):  # job serializer
 
     degree = sorted(list(set(degree)))
     print('--------degree--------', degree)
-    degree_thresh = degree[2]  # 0, min값인 노드는 제외
+    degree_thresh = degree[0]  # 차수 0인 노드는 제외 (최종 결과물_position 1개만 선택)
     max_degree = degree[-1]
     min_degree = degree[1]
 
     high_degree_node = []
     for node, deg in nx.degree(proj):
         degree.append(deg)
-        if deg >= degree_thresh:
+        if deg > degree_thresh:
             high_degree_node.append(node)
 
     proj_subnet = proj.subgraph(high_degree_node)
