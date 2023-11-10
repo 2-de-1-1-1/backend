@@ -3,18 +3,21 @@ from matplotlib import font_manager
 import numpy as np
 import networkx as nx
 from networkx.algorithms import bipartite
+import json
 
 # -----------------------
 # 1. 포지션 별 채용공고 
 # -----------------------
 def job_freq_hist(job_data):
-    # 1. 한글 설정 (macOS)
+    # 1. 한글 설정(macOS), json 파싱
 
     # font_path = ".ttf 파일 경로"
     # font_name = font_manager.FontProperties(fname=font_path).get_name()
-    
+
     font_name = 'AppleGothic'
     plt.rc('font', family=font_name)
+
+    job_data = json.loads(job_data)
 
     # 2. {position: frequency} dict
     position_freq = {}
@@ -64,13 +67,15 @@ def job_freq_hist(job_data):
 # 2.포지션 별 연관 기술 스택
 # -----------------------
 def job_tech_graph(job_data): # job serializer
-    # 1. 한글 설정 (macOS)
+    # 1. 한글 설정 (macOS), json 파싱
 
     # font_path = ".ttf 파일 경로"
     # font_name = font_manager.FontProperties(fname=font_path).get_name()
     
     font_name = 'AppleGothic'
     plt.rc('font', family=font_name)
+
+    job_data = json.loads(job_data)
 
     # 2. position, tech_stack node
     position = set([])
@@ -153,13 +158,15 @@ def job_tech_graph(job_data): # job serializer
 # 3. 포지션 별 연봉 정보
 # -----------------------
 def wage_pos_hist(job_data):
-    # 1. 한글 설정 (macOS)
+    # 1. 한글 설정 (macOS), json 파싱
 
     # font_path = ".ttf 파일 경로"
     # font_name = font_manager.FontProperties(fname=font_path).get_name()
     
     font_name = 'AppleGothic'
     plt.rc('font', family=font_name)
+
+    job_data = json.loads(job_data)
 
     # 2. position: [min_sum, max_sum, 연봉 정보 기재된 job 개수] dict
     position_wage = {}
