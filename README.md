@@ -3,6 +3,7 @@
 ## Local Run(on SQLLITE3)
 <pre>
   <code>
+    python manage.py makemigrations
     python manage.py migrate
     python manage.py runserver 
   </code>
@@ -16,6 +17,7 @@
 
 <pre>
   <code>
+    cd career_site
     python manage.py runserver --settings career_site.production
   </code>
 </pre>

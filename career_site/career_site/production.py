@@ -6,15 +6,12 @@ ALLOWED_HOSTS = [os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.env
 CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE_HOSTNAME' in os.environ else []
 DATABASES = {
     'default': {
-        'ENGINE': 'mssql',
-        'NAME': os.getenv("AZURE_SQL_NAME"),
-        'HOST': os.getenv("AZURE_SQL_HOST"),
-        'PORT': '1433',
-        'USER': os.getenv("AZURE_SQL_USER"),
-        'PASSWORD': os.getenv("AZURE_SQL_PASSWORD"),
-        'OPTIONS': {
-            'driver': 'ODBC Driver 18 for SQL Server',
-        },
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("AZURE_MYSQL_NAME"),
+        'HOST': os.getenv("AZURE_MYSQL_HOST"),
+        'PORT': '3306',
+        'USER': os.getenv("AZURE_MYSQL_USER"),
+        'PASSWORD': os.getenv("AZURE_MYSQL_PASSWORD"),
     }
 }
 
