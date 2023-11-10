@@ -95,18 +95,21 @@ def job_tech_graph(job_data):  # job serializer
             tech_stack.add(tech)
     # print('---------position----------', position)
     # print('---------tech_stack----------', tech_stack)
+
+    # 예외처리
+    if not position or not tech_stack:
+        return None
+    
     # 3. Graph node, edge 지정
     Bipart = nx.Graph()
 
-    # position = ['시스템/네트워크', '서버/백엔드', '프론트엔드', '머신러닝'] # for testing
     Bipart.add_nodes_from(position, bipartite=0) # 그룹 1: position
     Bipart.add_nodes_from(tech_stack, bipartite=1) # 그룹 2: tech_stack
 
     edges = []
     for job in job_data:
         for pos in job.get('position', []):
-            if pos in position:
-                for tech in job.get('tech_stack', []):
+            for tech in job.get('tech_stack', []):
                     edges.append((pos, tech))
 
     Bipart.add_edges_from(edges)
@@ -188,9 +191,11 @@ def wage_pos_hist(job_data):
         for pos in job.get('position', []):
             min_wage = job.get("min_wage", -1)
             max_wage = job.get("max_wage", -1)
+            # 연봉 정보 기재 x 공고
             if min_wage == -1 or max_wage == -1:
                 continue
 
+            # 연봉 정보 이상치
             if min_wage > anomaly:
                 min_wage //= anomaly_div
             if max_wage > anomaly:
@@ -200,12 +205,13 @@ def wage_pos_hist(job_data):
             # 초기화
             if len(position_wage[pos]) == 0:
                 position_wage[pos] = [min_wage, max_wage, 1]
+            # 누적 (for 평균 계산)
             else:
                 position_wage[pos][0] += min_wage
                 position_wage[pos][1] += max_wage
                 position_wage[pos][2] += 1
 
-    # 평균 min, max
+    # 평균 min, max 계산
     for pos, wage in position_wage.items():
         position_wage[pos][0] = wage[0] // wage[2]
         position_wage[pos][1] = wage[1] // wage[2]
