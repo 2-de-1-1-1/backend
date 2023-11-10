@@ -83,7 +83,7 @@ class JobSerializer(serializers.ModelSerializer):
                   'min_experience', 'max_experience', 'tech_stack', 'position', 'company_info']
 
     def get_tech_stack(self, obj):
-        job_tech_mapping = CompanyTechMapping.objects.filter(company_id=obj.id)
+        job_tech_mapping = JobTechMapping.objects.filter(job_id_id=obj.id)
         tech_stack_names = [mapping.tech_id.name for mapping in job_tech_mapping]
         return tech_stack_names
 

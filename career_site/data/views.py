@@ -3,6 +3,8 @@ from django.http import JsonResponse
 from .serializers import JobSerializer, CompanySerializer
 from .forms import *
 from .models import *
+from visualization.job_visualization import *
+import json
 
 
 # Create your views here.
@@ -47,9 +49,9 @@ def job_search_api(request):
                                   min_experience__gte=min_experience)
 
         job_serializer = JobSerializer(jobs, many=True)
-        json_response = JsonResponse(job_serializer.data, safe=False, json_dumps_params={'ensure_ascii': False})
+        # json_response = JsonResponse(job_serializer.data, safe=False, json_dumps_params={'ensure_ascii': False})
 
-        return json_response
+        return JsonResponse({'data': job_serializer.data}, safe=False, json_dumps_params={'ensure_ascii': False})
 
         # JSON 파일로 디스크에 저장
         # serialized_data = job_serializer.data
@@ -59,9 +61,25 @@ def job_search_api(request):
         # return JsonResponse(serialized_data, safe=False)
 
 
-def create_img(request):  # 테스트 함수
+def create_img(request):
     if request.method == 'POST':
-        # 이곳에서 시각화 로직 실행
-        pass
-    test_url = "https://source.unsplash.com/user/c_v_r/1900×800"
-    return JsonResponse({'image_url': test_url})
+        job_data = json.loads(request.body)['data']
+
+        # 각 시각화 함수를 호출하고 결과 이미지 파일의 경로를 저장
+        job_freq_hist_path = job_freq_hist(job_data)
+        # job_tech_graph_path = job_tech_graph(job_data)
+        wage_pos_hist_path = wage_pos_hist(job_data)
+
+        # 결과 이미지 파일의 경로를 URL로 변환
+        job_freq_hist_url = settings.MEDIA_URL + job_freq_hist_path
+        # job_tech_graph_url = settings.MEDIA_URL + job_tech_graph_path
+        wage_pos_hist_url = settings.MEDIA_URL + wage_pos_hist_path
+
+        # 결과 이미지 파일의 경로를 JSON 형식으로 반환
+        return JsonResponse({
+            'job_freq_hist': job_freq_hist_url,
+            # 'job_tech_graph': job_tech_graph_url,
+            'wage_pos_hist': wage_pos_hist_url,
+        })
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)

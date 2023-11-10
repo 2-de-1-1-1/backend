@@ -23,4 +23,5 @@ urlpatterns = [
     path('job/', job_search, name='job_search'),
     path('job/related-info', job_search_api, name='job_search_api'),
     path('job/create_img', create_img, name='create_img'),
+    # path('job/images/', load_image, name='load_img'),
 ]
