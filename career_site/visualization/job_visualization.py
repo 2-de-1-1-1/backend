@@ -125,7 +125,7 @@ def job_tech_graph(job_data):  # job serializer
     print('--------degree--------', degree)
     degree_thresh = degree[0]  # 차수 0인 노드는 제외 (최종 결과물_position 1개만 선택)
     max_degree = degree[-1]
-    min_degree = degree[1]
+    min_degree = degree[0]
 
     high_degree_node = []
     for node, deg in nx.degree(proj):
@@ -156,7 +156,7 @@ def job_tech_graph(job_data):  # job serializer
     # 8. 이미지 저장 & 이미지 저장 경로 반환
     # 이미지 파일 이름
     img_path = 'data/images/'
-    img_filename = 'job_wage_hist.png'
+    img_filename = 'job_tech_hist.png'
     img_file_path = img_path + img_filename
 
     # 이미지 저장
@@ -166,7 +166,6 @@ def job_tech_graph(job_data):  # job serializer
     img_url = img_file_path
 
     return img_url
-
 
 # -----------------------
 # 3. 포지션 별 연봉 정보

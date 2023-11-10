@@ -67,18 +67,18 @@ def create_img(request):
 
         # 각 시각화 함수를 호출하고 결과 이미지 파일의 경로를 저장
         job_freq_hist_path = job_freq_hist(job_data)
-        # job_tech_graph_path = job_tech_graph(job_data)
+        job_tech_graph_path = job_tech_graph(job_data)
         wage_pos_hist_path = wage_pos_hist(job_data)
 
         # 결과 이미지 파일의 경로를 URL로 변환
         job_freq_hist_url = settings.MEDIA_URL + job_freq_hist_path
-        # job_tech_graph_url = settings.MEDIA_URL + job_tech_graph_path
+        job_tech_graph_url = settings.MEDIA_URL + job_tech_graph_path
         wage_pos_hist_url = settings.MEDIA_URL + wage_pos_hist_path
 
         # 결과 이미지 파일의 경로를 JSON 형식으로 반환
         return JsonResponse({
             'job_freq_hist': job_freq_hist_url,
-            # 'job_tech_graph': job_tech_graph_url,
+            'job_tech_graph': job_tech_graph_url,
             'wage_pos_hist': wage_pos_hist_url,
         })
     else:
