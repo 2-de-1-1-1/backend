@@ -7,8 +7,8 @@ CSRF_TRUSTED_ORIGINS = ['https://' + os.environ['WEBSITE_HOSTNAME']] if 'WEBSITE
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
-        'NAME': os.getenv("AZURE_SQL_DATABASE"),
-        'HOST': os.getenv("AZURE_SQL_SERVER"),
+        'NAME': os.getenv("AZURE_SQL_NAME"),
+        'HOST': os.getenv("AZURE_SQL_HOST"),
         'PORT': '1433',
         'USER': os.getenv("AZURE_SQL_USER"),
         'PASSWORD': os.getenv("AZURE_SQL_PASSWORD"),
