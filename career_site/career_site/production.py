@@ -13,9 +13,9 @@ DATABASES = {
         'USER': os.getenv("AZURE_SQL_USER"),
         'PASSWORD': os.getenv("AZURE_SQL_PASSWORD"),
         'OPTIONS': {
-	            'driver': 'ODBC Driver 17 for SQL Server',
-	        },
+            'driver': 'ODBC Driver 18 for SQL Server',
+        },
     }
 }
 
-DEBUG = False
+DEBUG = True
