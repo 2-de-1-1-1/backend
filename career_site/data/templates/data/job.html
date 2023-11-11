@@ -16,6 +16,13 @@
             align-items: center;
             height: 100vh;
         }
+        .position-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .position-checkboxes div {
+            width: 20%; /* 5열로 표시하려면 100%를 5로 나눈 값을 지정 */
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- AJAX 요청에 필요한 CSRF 토큰 생성 -->
@@ -34,10 +41,37 @@
 </head>
 <body>
     <form id="job-search-form" action={% url 'job_search_api' %} method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
+    {% csrf_token %}
+        <p>
+            <label for="{{ form.position.id_for_label }}">{{ form.position.label }}</label>
+            <div class="position-checkboxes">
+                {% for choice in form.position.field.choices %}
+                <div>
+                    <input type="checkbox" name="{{ form.position.html_name }}" id="{{ form.position.auto_id }}_{{ forloop.counter0 }}" value="{{ choice.0 }}" {% if choice.0 in form.position.value %}checked{% endif %}>
+                    <label for="{{ form.position.auto_id }}_{{ forloop.counter0 }}">{{ choice.1 }}</label>
+                </div>
+                {% endfor %}
+            </div>
+        </p>
+        <p>
+            <label for="{{ form.min_experience.id_for_label }}">{{ form.min_experience.label }}</label>
+            <select name="{{ form.min_experience.html_name }}" id="{{ form.min_experience.auto_id }}">
+                {% for choice in form.min_experience.field.choices %}
+                <option value="{{ choice.0 }}" {% if choice.0 == form.min_experience.value %}selected{% endif %}>{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+        </p>
+        <p>
+            <label for="{{ form.min_wage.id_for_label }}">{{ form.min_wage.label }}</label>
+            <select name="{{ form.min_wage.html_name }}" id="{{ form.min_wage.auto_id }}">
+                {% for choice in form.min_wage.field.choices %}
+                <option value="{{ choice.0 }}" {% if choice.0 == form.min_wage.value %}selected{% endif %}>{{ choice.1 }}</option>
+                {% endfor %}
+            </select>
+        </p>
         <button type="submit">검색하기</button>
     </form>
+    <div id="result"></div>
     <div id="result"></div>
     <script>
         $(document).ready(function() {
