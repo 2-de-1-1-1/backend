@@ -42,9 +42,9 @@ def job_search_api(request):
         min_experience = form.cleaned_data['min_experience']
         min_wage = form.cleaned_data['min_wage']
 
-        # job_position_mapping = JobPositionMapping.objects.filter(position_id=target_position.id)
         job_position_mapping = JobPositionMapping.objects.filter(
-            position_id__in=[position.id for position in positions])
+            position_id__in=[position.id for position in positions]).select_related('job_id')
+
         jobs = Job.objects.filter(id__in=[mapping.job_id.id for mapping in job_position_mapping],
                                   min_wage__gte=min_wage,
                                   min_experience__gte=min_experience)

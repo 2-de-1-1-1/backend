@@ -82,11 +82,11 @@ class JobSerializer(serializers.ModelSerializer):
         fields = ['min_wage', 'max_wage', 'tech_stack', 'position']
 
     def get_tech_stack(self, obj):
-        job_tech_mapping = JobTechMapping.objects.filter(job_id_id=obj.id)
+        job_tech_mapping = JobTechMapping.objects.filter(job_id_id=obj.id).select_related('tech_id')
         tech_stack_names = [mapping.tech_id.name for mapping in job_tech_mapping]
         return tech_stack_names
 
     def get_position(self, obj):
-        job_position_mapping = JobPositionMapping.objects.filter(job_id_id=obj.id)
+        job_position_mapping = JobPositionMapping.objects.filter(job_id_id=obj.id).select_related('position_id')
         position_names = [mapping.position_id.name for mapping in job_position_mapping]
         return position_names
