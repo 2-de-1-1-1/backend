@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-DEBUG = True
+DEBUG = False
