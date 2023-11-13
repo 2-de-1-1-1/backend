@@ -73,14 +73,13 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class JobSerializer(serializers.ModelSerializer):
-    company_info = CompanySerializer(source='company_id', read_only=True)
+    # company_info = CompanySerializer(source='company_id', read_only=True)
     tech_stack = serializers.SerializerMethodField()
     position = serializers.SerializerMethodField()
 
     class Meta:
         model = Job
-        fields = ['name', 'work_type', 'due_datetime', 'min_wage', 'max_wage',
-                  'min_experience', 'max_experience', 'tech_stack', 'position', 'company_info']
+        fields = ['min_wage', 'max_wage', 'tech_stack', 'position']
 
     def get_tech_stack(self, obj):
         job_tech_mapping = JobTechMapping.objects.filter(job_id_id=obj.id)

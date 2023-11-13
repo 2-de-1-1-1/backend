@@ -38,18 +38,18 @@ def job_search(request):
 def job_search_api(request):
     form = JobSearchForm(request.POST)
     if form.is_valid():
-        position = form.cleaned_data['position']
+        positions = form.cleaned_data['position']
         min_experience = form.cleaned_data['min_experience']
         min_wage = form.cleaned_data['min_wage']
 
-        target_position = get_object_or_404(Position, pk=position.id)
-        job_position_mapping = JobPositionMapping.objects.filter(position_id=target_position.id)
+        # job_position_mapping = JobPositionMapping.objects.filter(position_id=target_position.id)
+        job_position_mapping = JobPositionMapping.objects.filter(
+            position_id__in=[position.id for position in positions])
         jobs = Job.objects.filter(id__in=[mapping.job_id.id for mapping in job_position_mapping],
                                   min_wage__gte=min_wage,
                                   min_experience__gte=min_experience)
 
         job_serializer = JobSerializer(jobs, many=True)
-        # json_response = JsonResponse(job_serializer.data, safe=False, json_dumps_params={'ensure_ascii': False})
 
         return JsonResponse({'data': job_serializer.data}, safe=False, json_dumps_params={'ensure_ascii': False})
 
