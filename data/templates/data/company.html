@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Career-Insight</title>
+    <link rel="shortcut icon" type="image/png" href="{% static 'bootstrap/images/logos/favicon.png' %}"/>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/styles.min.css' %}"/>
+</head>
+
+<body>
+<!--  Body Wrapper -->
+<div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+     data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+        <!-- Sidebar scroll-->
+        <div>
+            <div class="brand-logo d-flex align-items-center justify-content-between">
+                <a href="/" class="text-nowrap logo-img">
+                    <img src="{% static 'bootstrap/images/logos/dark-logo.svg' %}" width="180" alt=""/>
+                </a>
+                <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+                    <i class="ti ti-x fs-8"></i>
+                </div>
+            </div>
+            <!-- Sidebar navigation-->
+            <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+                <ul id="sidebarnav">
+                    <li class="nav-small-cap">
+                        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                        <span class="hide-menu">Dimensions</span>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="/job/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-device-laptop"></i>
+                </span>
+                            <span class="hide-menu">Jobs</span>
+                        </a>
+                    </li>
+                    <li class="sidebar-item">
+                        <a class="sidebar-link" href="/company/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-building-community"></i>
+                </span>
+                            <span class="hide-menu">Companies</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- End Sidebar navigation -->
+        </div>
+        <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+        <div class="container-fluid">
+            <form action="." enctype="application/x-www-form-urlencoded" method="post">
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item list-group-item-light">
+                        <label for="{{ form.num_employees.id_for_label }}">사원 수(명)</label>
+                        {{ form.num_employees }}
+                        <a>이상</a>
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.investment.id_for_label }}">투자(원)</label>
+                        {{ form.investment }}
+                        <a>이상</a>
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.revenue.id_for_label }}">매출(원)</label>
+                        {{ form.revenue }}
+                        <a>이상</a>
+                    </li>
+                    <li class="list-group-item">
+                        {% csrf_token %}
+                        <button class="btn btn-danger" type="submit">Plot</button>
+                    </li>
+
+
+                </ul>
+
+            </form>
+            {% if companies %}
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="{% static plots.hist %}" style="width:100%; min-height:400px">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-6 d-flex align-items-stretch">
+                    <div class="card w-100 h-200">
+                        <div class="card-body">
+                            <h5 class="card-title">Bubble Map for filtered Companies</h5>
+                            <iframe src="{% static plots.bubble_map %}"
+                                    style="display:block; width:100%; min-height:400px"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 d-flex align-items-stretch">
+                    <div class="card w-100 h-200">
+                        <div class="card-body">
+                            <h5 class="card-title">Clustered Bubble Map(행정 구역 기준)</h5>
+                            <iframe src="{% static plots.clustered_bubble_map %}"
+                                    style="display:block; width:100%; min-height:400px"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<script src="{% static 'bootstrap/libs/jquery/dist/jquery.min.js' %}"></script>
+<script src="{% static 'bootstrap/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/sidebarmenu.js' %}"></script>
+<script src="{% static 'bootstrap/js/app.min.js' %}"></script>
+
+</html>
