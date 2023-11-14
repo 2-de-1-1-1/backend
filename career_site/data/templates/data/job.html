@@ -1,32 +1,16 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="ko">
+
 <head>
-    <meta charset="UTF-8">
-    <title>직무 기반 검색</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-        }
-        #result {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-        .position-checkboxes {
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .position-checkboxes div {
-            width: 20%; /* 5열로 표시하려면 100%를 5로 나눈 값을 지정 */
-        }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- AJAX 요청에 필요한 CSRF 토큰 생성 -->
-    <script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Career-Insight</title>
+  <link rel="shortcut icon" type="image/png" href="{% static 'bootstrap/images/logos/favicon.png' %}"/>
+  <link rel="stylesheet" href="{% static 'bootstrap/css/styles.min.css' %}" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- AJAX 요청에 필요한 CSRF 토큰 생성 -->
+  <script>
         $(document).ready(function() {
             var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
             $.ajaxSetup({
@@ -37,45 +21,99 @@
                 }
             });
         });
-    </script>
+  </script>
 </head>
+
 <body>
-    <form id="job-search-form" action={% url 'job_search_api' %} method="POST">
-    {% csrf_token %}
-        <p>
-            <label for="{{ form.position.id_for_label }}">{{ form.position.label }}</label>
-            <div class="position-checkboxes">
-                {% for choice in form.position.field.choices %}
-                <div>
-                    <input type="checkbox" name="{{ form.position.html_name }}" id="{{ form.position.auto_id }}_{{ forloop.counter0 }}" value="{{ choice.0 }}" {% if choice.0 in form.position.value %}checked{% endif %}>
-                    <label for="{{ form.position.auto_id }}_{{ forloop.counter0 }}">{{ choice.1 }}</label>
-                </div>
-                {% endfor %}
-            </div>
-        </p>
-        <p>
-            <label for="{{ form.min_experience.id_for_label }}">{{ form.min_experience.label }}</label>
-            <select name="{{ form.min_experience.html_name }}" id="{{ form.min_experience.auto_id }}">
-                {% for choice in form.min_experience.field.choices %}
-                <option value="{{ choice.0 }}" {% if choice.0 == form.min_experience.value %}selected{% endif %}>{{ choice.1 }}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <p>
-            <label for="{{ form.min_wage.id_for_label }}">{{ form.min_wage.label }}</label>
-            <select name="{{ form.min_wage.html_name }}" id="{{ form.min_wage.auto_id }}">
-                {% for choice in form.min_wage.field.choices %}
-                <option value="{{ choice.0 }}" {% if choice.0 == form.min_wage.value %}selected{% endif %}>{{ choice.1 }}</option>
-                {% endfor %}
-            </select>
-        </p>
-        <button type="submit">검색하기</button>
-    </form>
-    <div id="result"></div>
-    <div id="result"></div>
-    <script>
+  <!--  Body Wrapper -->
+  <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full"
+    data-sidebar-position="fixed" data-header-position="fixed">
+    <!-- Sidebar Start -->
+    <aside class="left-sidebar">
+      <!-- Sidebar scroll-->
+      <div>
+        <div class="brand-logo d-flex align-items-center justify-content-between">
+          <a href="/" class="text-nowrap logo-img">
+            <img src="{% static 'bootstrap/images/logos/dark-logo.svg' %}" width="180" alt="" />
+          </a>
+          <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
+            <i class="ti ti-x fs-8"></i>
+          </div>
+        </div>
+        <!-- Sidebar navigation-->
+        <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
+          <ul id="sidebarnav">
+            <li class="nav-small-cap">
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Dimensions</span>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/job/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-device-laptop"></i>
+                </span>
+                <span class="hide-menu">Jobs</span>
+              </a>
+            </li>
+            <li class="sidebar-item">
+              <a class="sidebar-link" href="/company/" aria-expanded="false">
+                <span>
+                  <i class="ti ti-building-community"></i>
+                </span>
+                <span class="hide-menu">Companies</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <!-- End Sidebar navigation -->
+      </div>
+      <!-- End Sidebar scroll-->
+    </aside>
+    <!--  Sidebar End -->
+    <!--  Main wrapper -->
+    <div class="body-wrapper">
+        <div class="container-fluid">
+
+            <form id="job-search-form" action="{% url 'job_search_api' %}" method="POST">
+                {% csrf_token %}
+                <ul class="list-group list-group-horizontal">
+                    <li class="list-group-item">
+                        <button class="btn btn-light dropdown-toggler" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false"> 직무 카테고리 <i class="ti ti-triangle-inverted"></i> </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            {% for choice in form.position.field.choices %}
+                            <li>
+                                <input type="checkbox" name="{{ form.position.html_name }}" id="{{ form.position.auto_id }}_{{ forloop.counter0 }}" value="{{ choice.0 }}" {% if choice.0 in form.position.value %}checked{% endif %}>
+                                <label for="{{ form.position.auto_id }}_{{ forloop.counter0 }}">{{ choice.1 }}</label>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.min_experience.id_for_label }}">{{ form.min_experience.label }}</label>
+                        <select class="form-select-sm" name="{{ form.min_experience.html_name }}" id="{{ form.min_experience.auto_id }}" style="min-width:200px">
+                             {% for choice in form.min_experience.field.choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == form.min_experience.value %}selected{% endif %}>{{ choice.1 }}</option>
+                             {% endfor %}
+                         </select>
+                    </li>
+                    <li class="list-group-item">
+                        <label for="{{ form.min_wage.id_for_label }}">{{ form.min_wage.label }}</label>
+                        <select class="form-select-sm" name="{{ form.min_wage.html_name }}" id="{{ form.min_wage.auto_id }}" style="min-width:200px">
+                            {% for choice in form.min_wage.field.choices %}
+                            <option value="{{ choice.0 }}" {% if choice.0 == form.min_wage.value %}selected{% endif %}>{{ choice.1 }}</option>
+                            {% endfor %}
+                         </select>
+                    </li>
+                    <li class="list-group-item">
+                        <button class="btn btn-danger" type="submit">Plot</button>
+                    </li>
+                </ul>
+            </form>
+        </div>
+<script>
         $(document).ready(function() {
             $('#job-search-form').on('submit', function(e) {
+                $('.result-plot').remove();
                 e.preventDefault();
                 $('#job-search-form').nextAll('img').remove();
                 $.ajax({
@@ -91,9 +129,9 @@
                             success: function(img_data) {
                                 var now = new Date().getTime();
                                 <!-- 서버로부터 받아온 이미지 URL로 img 태그 생성 -->
-                                var img1 = '<img src="' + img_data.job_freq_hist + '?v=' + now + '" style="width:70%;">';
-                                var img2 = '<img src="' + img_data.job_tech_graph + '?v=' + now + '" style="width:50%;">';
-                                var img3 = '<img src="' + img_data.wage_pos_hist + '?v=' + now + '" style="width:80%;">';
+                                var img1 = '<div class="row result-plot"><div class="card"><div class="card-body"><img src="' + img_data.job_freq_hist + '" style="width:100%;"></div></div></div>';
+                                var img2 = '<div class="row result-plot"><div class="card"><div class="card-body"><img src="' + img_data.job_tech_graph + '" style="width:100%;"></div></div></div>';
+                                var img3 = '<div class="row result-plot"><div class="card"><div class="card-body"><img src="' + img_data.wage_pos_hist + '" style="width:100%;"></div></div></div>';
 
                                 <!-- 생성한 img 태그를 HTML 문서에 추가 -->
                                 $('#job-search-form').after(img1, img2, img3);
@@ -106,5 +144,10 @@
             });
         });
     </script>
+    </div>
+  </div>
+  <script src="{% static 'bootstrap/libs/jquery/dist/jquery.min.js' %}"></script>
+  <script src="{% static 'bootstrap/libs/bootstrap/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'bootstrap/js/sidebarmenu.js' %}"></script>
+  <script src="{% static 'bootstrap/js/app.min.js' %}"></script>
 </body>
-</html>

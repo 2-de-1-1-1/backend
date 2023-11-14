@@ -6,7 +6,6 @@ class CompanyForm(forms.ModelForm):
     num_employees = forms.IntegerField(required=False, min_value=0, label='사원 수', initial=0)
     investment = forms.IntegerField(required=False, min_value=0, label='투자 금액(원)', initial=0)
     revenue = forms.IntegerField(required=False, min_value=0, label='매출(원)', initial=0)
-    get_json = forms.BooleanField(required=False, label='Json 응답 반환')
 
     class Meta:
         model = Company

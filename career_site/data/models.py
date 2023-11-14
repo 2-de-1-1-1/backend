@@ -51,8 +51,8 @@ class Company(models.Model):
     revenue = models.IntegerField(null=True)
     homepage = models.CharField(max_length=200, null=True)
     loc_info_id = models.ForeignKey(LocationInfo, models.DO_NOTHING, null=True, db_column='loc_info_id')
-    #welfare = models.ManyToManyField(Welfare, through='CompanyWelfareMapping')
-    #tech_stack = models.ManyToManyField(TechStack, through='CompanyTechMapping')
+    welfare = models.ManyToManyField(Welfare, through='CompanyWelfareMapping')
+    tech_stack = models.ManyToManyField(TechStack, through='CompanyTechMapping')
 
     # created_at = models.DateTimeField()
     # modified_at = models.DateTimeField()
