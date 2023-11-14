@@ -15,4 +15,4 @@ DATABASES = {
     }
 }
 
-DEBUG = False if 'WEBSITE_HOSTNAME' in os.environ else True
+DEBUG = True
