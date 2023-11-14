@@ -4,14 +4,19 @@ from .serializers import JobSerializer, CompanySerializer
 from .forms import *
 from .models import *
 from visualization.job_visualization import *
+from visualization.company_visualization import *
 import json
 
 
 # Create your views here.
+def index(request):
+    return render(request, 'data/index.html')
+
 
 def company(request):
     form = CompanyForm(request.POST or None)
     companies = None
+    plots = {}
     if request.method == 'POST':
         form = CompanyForm(request.POST)
 
@@ -22,12 +27,14 @@ def company(request):
                 revenue__gte=form.cleaned_data.get('revenue')
             )
 
-            # 임시로 Json리턴하도록 설정
-            if form.cleaned_data.get('get_json'):
-                return JsonResponse(CompanySerializer(companies, many=True).data, safe=False,
-                                    json_dumps_params={'ensure_ascii': False})
+            company_data = CompanySerializer(companies, many=True).data
+            plots['hist'] = visualize_company_employees(company_data)
+            plots['bubble_map'] = visualize_company_location(company_data)
+            plots['clustered_bubble_map'] = visualize_dong_location(company_data)
+            print(plots)
 
-    return render(request, 'data/company.html', {'form': form, 'companies': companies})
+    return render(request, 'data/company.html', {'form': form, 'companies': companies,
+                                                 'plots': plots})
 
 
 def job_search(request):
@@ -71,10 +78,11 @@ def create_img(request):
         wage_pos_hist_path = wage_pos_hist(job_data)
 
         # 결과 이미지 파일의 경로를 URL로 변환
-        job_freq_hist_url = settings.MEDIA_URL + job_freq_hist_path
-        job_tech_graph_url = settings.MEDIA_URL + job_tech_graph_path
-        wage_pos_hist_url = settings.MEDIA_URL + wage_pos_hist_path
+        job_freq_hist_url = settings.STATIC_URL + job_freq_hist_path
+        job_tech_graph_url = settings.STATIC_URL + job_tech_graph_path
+        wage_pos_hist_url = settings.STATIC_URL + wage_pos_hist_path
 
+        print(job_freq_hist_url)
         # 결과 이미지 파일의 경로를 JSON 형식으로 반환
         return JsonResponse({
             'job_freq_hist': job_freq_hist_url,

@@ -1,11 +1,20 @@
 import matplotlib
-matplotlib.use('Agg') # 맥 OS 스레드 충돌 해결 설정
+
 import matplotlib.pyplot as plt
 from matplotlib import font_manager
 import numpy as np
 import networkx as nx
 from networkx.algorithms import bipartite
 from django.conf import settings
+import os
+
+matplotlib.use('Agg')  # 맥 OS 스레드 충돌 해결 설정
+FONT_PATH = os.path.join(settings.STATIC_ROOT, 'fonts/')
+FONT_FILES = font_manager.findSystemFonts(fontpaths=FONT_PATH)
+FONT_FAMILY = 'NanumGothic'
+FONT_MANAGER = font_manager.FontManager()
+for font_file in FONT_FILES:
+    FONT_MANAGER.addfont(font_file)
 
 # -----------------------
 # 1. 포지션 별 채용공고 
@@ -14,10 +23,7 @@ def job_freq_hist(job_data):
     # 1. 한글 설정(macOS), json 파싱
 
     # font_path = ".ttf 파일 경로"
-    # font_name = font_manager.FontProperties(fname=font_path).get_name()
-
-    font_name = 'AppleGothic'
-    plt.rc('font', family=font_name)
+    matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. {position: frequency} dict
     position_freq = {}
@@ -55,22 +61,19 @@ def job_freq_hist(job_data):
     plt.xlabel('position', fontsize=20)
     plt.ylabel('frequency', fontsize=20)
     # plt.xticks(np.arange(0, len(position_freq.keys())), labels=positions, fontsize=13)
-    ticks = np.arange(0, len(position_freq.keys())) # tick 오류 해결
+    ticks = np.arange(0, len(position_freq.keys()))  # tick 오류 해결
     plt.xticks(ticks, labels=positions, fontsize=13)
 
     # 5. 이미지 저장 & 이미지 저장 경로 반환
     # 이미지 파일 이름
-    img_path = 'data/images/'
-    img_filename = 'job_frequency.png'
-    img_file_path = img_path + img_filename
+    img_filename = 'plots/job_frequency.png'
+    img_file_path = os.path.join(settings.STATIC_ROOT, img_filename)
 
     # 이미지 저장
     plt.savefig(img_file_path)
 
-    # 이미지 URL 생성
-    img_url = img_file_path
 
-    return img_url
+    return img_filename
 
 
 # -----------------------
@@ -78,12 +81,7 @@ def job_freq_hist(job_data):
 # -----------------------
 def job_tech_graph(job_data):  # job serializer
     # 1. 한글 설정 (macOS), json 파싱
-
-    # font_path = ".ttf 파일 경로"
-    # font_name = font_manager.FontProperties(fname=font_path).get_name()
-
-    font_name = 'AppleGothic'
-    plt.rc('font', family=font_name)
+    matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. position, tech_stack node
     position = set([])
@@ -97,18 +95,18 @@ def job_tech_graph(job_data):  # job serializer
     # 예외처리
     # if not position or not tech_stack:
     #     return None
-    
+
     # 3. Graph node, edge 지정
     Bipart = nx.Graph()
 
-    Bipart.add_nodes_from(position, bipartite=0) # 그룹 1: position
-    Bipart.add_nodes_from(tech_stack, bipartite=1) # 그룹 2: tech_stack
+    Bipart.add_nodes_from(position, bipartite=0)  # 그룹 1: position
+    Bipart.add_nodes_from(tech_stack, bipartite=1)  # 그룹 2: tech_stack
 
     edges = []
     for job in job_data:
         for pos in job.get('position', []):
             for tech in job.get('tech_stack', []):
-                    edges.append((pos, tech))
+                edges.append((pos, tech))
     Bipart.add_edges_from(edges)
 
     # 4. tech_stack projection
@@ -128,7 +126,7 @@ def job_tech_graph(job_data):  # job serializer
     high_degree_node = []
     for node, deg in nx.degree(proj):
         degree.append(deg)
-        print('deg', deg, 'degree_thresh', degree_thresh)
+        # print('deg', deg, 'degree_thresh', degree_thresh)
         if deg >= degree_thresh:
             high_degree_node.append(node)
 
@@ -148,34 +146,27 @@ def job_tech_graph(job_data):  # job serializer
                            node_color=list(node_values.values()),
                            cmap=cmap,
                            vmin=min_degree, vmax=max_degree)
-    nx.draw_networkx_labels(proj_subnet, pos=pos, font_size=17, font_color='black')
+    nx.draw_networkx_labels(proj_subnet, pos=pos, font_family=FONT_FAMILY, font_size=17, font_color='black')
     nx.draw_networkx_edges(proj_subnet, pos=pos, edge_color='lightgrey')
 
     # 8. 이미지 저장 & 이미지 저장 경로 반환
     # 이미지 파일 이름
-    img_path = 'data/images/'
-    img_filename = 'job_tech_hist.png'
-    img_file_path = img_path + img_filename
+    img_filename = 'plots/job_tech_hist.png'
+    img_file_path = os.path.join(settings.STATIC_ROOT, img_filename)
 
     # 이미지 저장
     plt.savefig(img_file_path)
 
-    # 이미지 URL 생성
-    img_url = img_file_path
 
-    return img_url
+    return img_filename
+
 
 # -----------------------
 # 3. 포지션 별 연봉 정보
 # -----------------------
 def wage_pos_hist(job_data):
     # 1. 한글 설정 (macOS), json 파싱
-
-    # font_path = ".ttf 파일 경로"
-    # font_name = font_manager.FontProperties(fname=font_path).get_name()
-
-    font_name = 'AppleGothic'
-    plt.rc('font', family=font_name)
+    matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. position: [min_sum, max_sum, 연봉 정보 기재된 job 개수] dict
     position_wage = {}
@@ -252,19 +243,15 @@ def wage_pos_hist(job_data):
     plt.xticks(np.arange(0, len(position_wage.keys())), labels=positions, fontsize=20)
 
     current_values = plt.gca().get_yticks()
-    plt.gca().set_yticks(current_values) # tick 오류 해결
+    plt.gca().set_yticks(current_values)  # tick 오류 해결
     plt.gca().set_yticklabels(['{:,.0f}'.format(x) for x in current_values], fontsize=20)
 
-
     # 5. 이미지 저장 & 이미지 저장 경로 반환
-    img_path = 'data/images/'
-    img_filename = 'job_wage_hist.png'
-    img_file_path = img_path + img_filename
+    img_filename = 'plots/job_wage_hist.png'
+    img_file_path = os.path.join(settings.STATIC_ROOT, img_filename)
 
     # 이미지 저장
     plt.savefig(img_file_path)
 
-    # 이미지 URL 생성
-    img_url = img_file_path
 
-    return img_url
+    return img_filename

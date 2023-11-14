@@ -51,25 +51,15 @@ class CompanyWelfareMappingSerializer(serializers.ModelSerializer):
 
 
 class CompanySerializer(serializers.ModelSerializer):
-    tech_stack = serializers.SerializerMethodField()
-    welfare = serializers.SerializerMethodField()
-    loc_info = LocationInfoSerializer(source='loc_info_id', read_only=True)
+    tech_stack = TechStackSerializer(many=True, allow_null=True)
+    welfare = WelfareSerializer(many=True, allow_null=True)
+    location = LocationInfoSerializer(source='loc_info_id', read_only=True, allow_null=True)
 
     class Meta:
         model = Company
-        fields = ['name', 'num_employees', 'investment', 'revenue', 'homepage', 'tech_stack',
-                  'welfare', 'loc_info']
+        fields = ['id', 'name', 'num_employees', 'investment', 'revenue', 'homepage', 'tech_stack',
+                  'welfare', 'location']
         depth = 1
-
-    def get_tech_stack(self, obj):
-        job_tech_mapping = CompanyTechMapping.objects.filter(company_id=obj.id)
-        tech_stack_names = [mapping.tech_id.name for mapping in job_tech_mapping]
-        return tech_stack_names
-
-    def get_welfare(self, obj):
-        company_welfare_mapping = CompanyWelfareMapping.objects.filter(company_id=obj.id)
-        welfare_names = [mapping.welfare_id.name for mapping in company_welfare_mapping]
-        return welfare_names
 
 
 class JobSerializer(serializers.ModelSerializer):
