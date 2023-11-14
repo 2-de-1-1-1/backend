@@ -241,4 +241,4 @@ cython_debug/
 #.idea/
 
 # Django StaticFiles gathered by running 'collectstatic'
-/career_site/staticfiles
+/staticfiles
