@@ -9,12 +9,11 @@ from django.conf import settings
 import os
 
 matplotlib.use('Agg')  # 맥 OS 스레드 충돌 해결 설정
-FONT_PATH = os.path.join(settings.STATIC_ROOT, 'fonts/')
-FONT_FILES = font_manager.findSystemFonts(fontpaths=FONT_PATH)
-FONT_FAMILY = 'NanumGothic'
-FONT_MANAGER = font_manager.FontManager()
-for font_file in FONT_FILES:
-    FONT_MANAGER.addfont(font_file)
+FONT_PATH = os.path.join(settings.STATIC_ROOT, 'fonts/NanumGothic.ttf')
+FONT = font_manager.FontProperties(fname=FONT_PATH)
+FONT_FAMILY = FONT.get_name()
+font_manager.fontManager.addfont(FONT_PATH)
+matplotlib.rcParams['font.family'] = FONT_FAMILY
 
 # -----------------------
 # 1. 포지션 별 채용공고 
@@ -23,7 +22,6 @@ def job_freq_hist(job_data):
     # 1. 한글 설정(macOS), json 파싱
 
     # font_path = ".ttf 파일 경로"
-    matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. {position: frequency} dict
     position_freq = {}
@@ -81,7 +79,7 @@ def job_freq_hist(job_data):
 # -----------------------
 def job_tech_graph(job_data):  # job serializer
     # 1. 한글 설정 (macOS), json 파싱
-    matplotlib.rcParams['font.family'] = FONT_FAMILY
+    #matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. position, tech_stack node
     position = set([])
@@ -146,7 +144,7 @@ def job_tech_graph(job_data):  # job serializer
                            node_color=list(node_values.values()),
                            cmap=cmap,
                            vmin=min_degree, vmax=max_degree)
-    nx.draw_networkx_labels(proj_subnet, pos=pos, font_family=FONT_FAMILY, font_size=17, font_color='black')
+    nx.draw_networkx_labels(proj_subnet, pos=pos, font_size=17, font_color='black', font_family=FONT_FAMILY)
     nx.draw_networkx_edges(proj_subnet, pos=pos, edge_color='lightgrey')
 
     # 8. 이미지 저장 & 이미지 저장 경로 반환
@@ -166,7 +164,7 @@ def job_tech_graph(job_data):  # job serializer
 # -----------------------
 def wage_pos_hist(job_data):
     # 1. 한글 설정 (macOS), json 파싱
-    matplotlib.rcParams['font.family'] = FONT_FAMILY
+    #matplotlib.rcParams['font.family'] = FONT_FAMILY
 
     # 2. position: [min_sum, max_sum, 연봉 정보 기재된 job 개수] dict
     position_wage = {}

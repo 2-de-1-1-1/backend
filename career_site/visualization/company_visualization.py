@@ -9,12 +9,11 @@ from folium.plugins import MarkerCluster
 from matplotlib import font_manager
 
 matplotlib.use('Agg')  # 맥 OS 스레드 충돌 해결 설정
-FONT_PATH = os.path.join(settings.STATIC_ROOT, 'fonts/')
-FONT_FILES = font_manager.findSystemFonts(fontpaths=FONT_PATH)
-FONT_FAMILY = 'NanumGothic'
-FONT_MANAGER = font_manager.FontManager()
-for font_file in FONT_FILES:
-    FONT_MANAGER.addfont(font_file)
+FONT_PATH = os.path.join(settings.STATIC_ROOT, 'fonts/NanumGothic.ttf')
+FONT = font_manager.FontProperties(fname=FONT_PATH)
+FONT_FAMILY = FONT.get_name()
+font_manager.fontManager.addfont(FONT_PATH)
+matplotlib.rcParams['font.family'] = FONT_FAMILY
 
 
 # -----------------------
@@ -24,7 +23,6 @@ def visualize_company_employees(company_data):
     # company data 가져오기
     # 한글설정 (macOS)
 
-    plt.rcParams['font.family'] = FONT_FAMILY
 
     # 회사 이름, 사원수 딕셔너리
     new_data = {item["name"]: item["num_employees"] for item in company_data}
@@ -36,15 +34,15 @@ def visualize_company_employees(company_data):
     companies = ['\n'.join(list(name)) for name in companies]
 
     # plot
-    plt.figure(figsize=(100, 10))
+    plt.figure(figsize=(20, 10))
 
     # 사원수가 50명 이상이면 빨간색 막대
     colors = ['red' if x >= 50 else 'green' for x in employees]
 
     plt.bar(companies, employees, color=colors)
-    plt.xlabel('회사')
-    plt.ylabel('사원 수')
-    plt.title('회사별 사원 수')
+    plt.xlabel('회사', fontsize=20)
+    plt.ylabel('사원 수', fontsize=30)
+    plt.title('회사별 사원 수', fontsize=40)
 
     # 이미지 저장, 반환
     img_path = 'plots/company_barchart.png'
